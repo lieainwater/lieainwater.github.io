@@ -1,50 +1,10 @@
----
-layout:     post
-title:      ReactiveCocoa 进阶
-subtitle:   函数式编程框架 ReactiveCocoa 进阶
-date:       2017-01-06
-author:     BY
-header-img: img/post-bg-ios9-web.jpg
-catalog: true
-tags:
-    - iOS
-    - ReactiveCocoa
-    - 函数式编程
-    - 开源框架
----
-# 前言
 
->在[上篇文章](http://qiubaiying.github.io/2016/12/26/ReactiveCocoa-基础/)中介绍了**ReactiveCocoa**的基础知识,接下来我们来深入介绍**ReactiveCocoa**及其在**MVVM**中的用法。
-
-
-![ReactiveCocoa进阶思维导图](https://ww3.sinaimg.cn/large/006y8lVagw1fbgye3re5xj30je0iomz8.jpg)
-# 常见操作方法介绍
-
-
-#### 操作须知
-
-所有的信号（RACSignal）都可以进行操作处理，因为所有操作方法都定义在RACStream.h中，因此只要继承RACStream就有了操作处理方法。
-#### 操作思想
-
-运用的是Hook（钩子）思想，Hook是一种用于改变API(应用程序编程接口：方法)执行结果的技术.
-
-Hook用处：截获API调用的技术。
-
-有关Hook的知识可以看我的这篇博客[《Objective-C Runtime 的一些基本使用》](http://www.jianshu.com/p/ff114e69cc0a)中的 *更换代码的实现方法* 一节,
-
-Hook原理：在每次调用一个API返回结果之前，先执行你自己的方法，改变结果的输出。
-
-#### 操作方法
-
-#### **bind**（绑定）- ReactiveCocoa核心方法
-
-**ReactiveCocoa** 操作的核心方法是 **bind**（绑定）,而且也是RAC中核心开发方式。之前的开发方式是赋值，而用RAC开发，应该把重心放在绑定，也就是可以在创建一个对象的时候，就绑定好以后想要做的事情，而不是等赋值之后在去做事情。
 
 列如，把数据展示到控件上，之前都是重写控件的 `setModel` 方法，用RAC就可以在一开始创建控件的时候，就绑定好数据。
 
 - **作用**
 
-	RAC底层都是调用**bind**， 在开发中很少直接使用 **bind** 方法，**bind**属于RAC中的底层方法，我们只需要调用封装好的方法，**bind**用作了解即可.
+	RAC底层都是调用**bind**， 在开发中很少直接使用 **bind** 方法，
 
 - **bind方法使用步骤**
      1. 传入一个返回值 `RACStreamBindBlock` 的 block。
@@ -159,14 +119,7 @@ Hook原理：在每次调用一个API返回结果之前，先执行你自己的�
      2. 当源信号发送内容，就会调用` bindBlock(value, *stop)`
      3. 调用`bindBlock`，内部就会调用 **flattenMap** 的 bloc k，**flattenMap** 的block作用：就是把处理好的数据包装成信号。
      4. 返回的信号最终会作为 `bindBlock` 中的返回信号，当做 `bindBlock` 的返回信号。
-     5. 订阅 `bindBlock` 的返回信号，就会拿到绑定信号的订阅者，把处理完成的信号内容发送出来。
-	
-###### Map
-
-- **作用**
- 
-	把源信号的值映射成一个新的值
-
+     5. 订阅 `bindBlock` 
 	
 - **使用步骤**
      1. 传入一个block,类型是返回对象，参数是 `value`
@@ -193,7 +146,7 @@ Hook原理：在每次调用一个API返回结果之前，先执行你自己的�
      1. 当订阅绑定信号，就会生成 `bindBlock` 
      3. 当源信号发送内容，就会调用 `bindBlock(value, *stop)`
      4. 调用 `bindBlock` ，内部就会调用 `flattenMap的block`
-     5. `flattenMap的block` 内部会调用 `Map` 中的block，把 `Map` 中的block返回的内容包装成返回的信号
+     5. `flattenMap的block` 内部会调用 `Map` 中的block，把 
      5. 返回的信号最终会作为 `bindBlock` 中的返回信号，当做 `bindBlock` 的返回信号
      6. 订阅 `bindBlock` 的返回信号，就会拿到绑定信号的订阅者，把处理完成的信号内容发送出来。
 
@@ -220,39 +173,7 @@ Hook原理：在每次调用一个API返回结果之前，先执行你自己的�
 
     }] subscribeNext:^(id x) {
 
-        // 只有signalOfsignals的signal发出信号才会调用，因为内部订阅了bindBlock中返回的信号，也就是flattenMap返回的信号。
-        // 也就是flattenMap返回的信号发出内容，才会调用。
-
-        NSLog(@"signalOfsignals：%@",x);
-    }];
-
-    // 信号的信号发送信号
-    [signalOfsignals sendNext:signal];
-
-    // 信号发送内容
-    [signal sendNext:@"hi"];
-	
-	```
-	
-#### 组合
-
-组合就是将多个信号按照某种规则进行拼接，合成新的信号。
-
-###### concat
-
-- **作用** 
-
-	按**顺序拼接**信号，当多个信号发出的时候，有顺序的接收信号。
-- **底层实现**
-     1. 当拼接信号被订阅，就会调用拼接信号的didSubscribe
-     2. didSubscribe中，会先订阅第一个源信号（signalA）
-     3. 会执行第一个源信号（signalA）的didSubscribe
-     4. 第一个源信号（signalA）didSubscribe中发送值，就会调用第一个源信号（signalA）订阅者的nextBlock,通过拼接信号的订阅者把值发送出来.
-     5. 第一个源信号（signalA）didSubscribe中发送完成，就会调用第一个源信号（signalA）订阅者的completedBlock,订阅第二个源信号（signalB）这时候才激活（signalB）。
-     6. 订阅第二个源信号（signalB）,执行第二个源信号（signalB）的didSubscribe
-     7. 第二个源信号（signalA）didSubscribe中发送值,就会通过拼接信号的订阅者把值发送出来.
-- **使用步骤**
-
+        // 只有signalOfsignals的signal发出信号才
 	1. 使用`concat:`拼接信号
 	2. 订阅拼接信号，内部会自动按拼接顺序订阅信号
 - **使用**
