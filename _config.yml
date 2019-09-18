@@ -3,38 +3,25 @@ title: Yuanyu Blog
 SEOTitle: 渊鱼 | BY Blog
 header-img: img/post-bg-desk.jpg
 email: mhyhym@163.com
-description: "梦为鱼而沒于渊"
+description: "once up on there was a writer"
 keyword: "琐记, 脑洞, 坑"
 url: "http://lieainwater.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog
 
 # Sidebar settings
-sidebar: true                           # whether or not using Sidebar.
+sidebar: not                      # whether or not using Sidebar.
 sidebar-about-description: "鱼潜在渊，或在于渚"
-sidebar-avatar: /img/about-BY-gentle.jpg      # use absolute URL, seeing it's used in both `/` and `/about/
+sidebar-avatar:      # use absolute URL, seeing it's used in both `/` and `/about/
 
 
 # 评论系统
 # Disqus（https://disqus.com/）
 # disqus_username: lieainwater
 
-# Gitalk
-gitalk:
-  enable: true    #是否开启Gitalk评论
-  clientID: f2c84e7629bb1446c1a4                            #生成的clientID
-  clientSecret: ca6d6139d1e1b8c43f8b2e19492ddcac8b322d0d    #生成的clientSecret
-  repo: lieainwater.github.io    #仓库名称
-  owner: lieainwater    #github用户名
-  admin: lieainwater
-  distractionFreeMode: true #是否启用类似FB的阴影遮
+
 
 # Featured Tags
 featured-tags: true                     # 是否使用首页标签
 featured-condition-size: 5          # 相同标签数量大于这个数，才会出现在首页
 
-
-
-# Progressive Web Apps
-chrome-tab-theme-color: "#000000"
-service-worker: true
 
