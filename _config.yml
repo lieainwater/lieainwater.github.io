@@ -5,7 +5,7 @@ header-img: img/post-bg-desk.jpg
 email: mhyhym@163.com
 description: "梦为鱼而沒于渊"
 keyword: "琐记, 脑洞, 坑"
-url: "http://lieainwater一.github.io"          # your host, for absolute URL
+url: "http://lieainwater.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog
 
 # Sidebar settings
